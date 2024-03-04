@@ -13,7 +13,7 @@ const typeDefs = gql`
     email: String!
     badgeNumber: String
     password: String
-    role: String
+    role: String!
     webhooksDetails: [WebhookDetails]
   }
 
@@ -47,6 +47,7 @@ const typeDefs = gql`
     email: String!
     password: String!
     role: String!
+    
   }
 `;
 

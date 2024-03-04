@@ -198,18 +198,19 @@ const addEventWebhook = async (id: string, WebhookDetails: WebhookDetails) => {
   return user;
 }
 
-const getEventsWebhook = async (pageArgs: GetUsersArgs, WebhookDetails: WebhookDetails) => {
+const getEventsWebhook = async ({ page = 1, limit = 10 }, WebhookDetails: WebhookDetails) => {
   const events = await User.find({
     $or: [
       { 'webhooksDetails.url': WebhookDetails.url },
       { 'webhooksDetails.eventName': WebhookDetails.eventName }
     ]
   })
-  .limit(pageArgs.limit)
-  .skip((pageArgs.page - 1) * pageArgs.limit)
+  .limit(limit)
+  .skip((page - 1) * limit)
   .exec();
   return events;
 }
+
 
 export const userService = {
   createUser,

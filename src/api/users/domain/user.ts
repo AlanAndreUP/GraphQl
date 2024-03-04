@@ -1,10 +1,13 @@
+export type WebhooksDetails = { url: string, eventName: string }
+
 export class User {
     constructor(
         readonly name: string,
         readonly lastName: string,
         readonly badgeNumber: string,
         readonly password: string,
-        readonly role: string
+        readonly role: string,
+        readonly webhooksDetails?: WebhooksDetails
     ){}
 }
 

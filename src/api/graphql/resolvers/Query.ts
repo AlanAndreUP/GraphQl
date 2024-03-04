@@ -43,8 +43,11 @@ const Query = {
     return userService.getTotalUserCount();
   },
 
-  totalOfEvents: async (parent: any, args: any, context: any) => {
-    return userService.getEventsWebhook({url: args.url, eventName: args.eventName});
+  totalOfEvents: async (paren:any, { page, limit }: pageArgs, args: any, context: any) => {
+    if (!context.user) {
+      throw signale.fatal(new Error("Autenticación requerida."));
+    }
+    return userService.getEventsWebhook({page, limit}, {url: args.url, eventName: args.eventName});
   }
 };
 

@@ -2,6 +2,7 @@ import User from '../models/User';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import signale from 'signale';
+import axios from 'axios';
 
 interface UserData {
   name: string;
@@ -46,8 +47,8 @@ interface GetUsersByRoleArgs {
   role: string;
 }
 interface GetUsersArgs {
-  page?: number;
-  limit?: number;
+  page: number;
+  limit: number;
 }
 
 interface WebhookDetails {
@@ -64,15 +65,12 @@ async function sendWebhookDataUser(user:any, eventName?:string): Promise<void>{
       }
     }
     if(webhooksUrl != null && webhooksUrl != "" && webhooksUrl.length > 0){
-      const response = await fetch(webhooksUrl, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(user)
-      })
-      if(response.ok){
-          signale.success("Data enviada al webhook usuario actualizado");
+      console.log("entramos")
+      try {
+        await axios.post(webhooksUrl, { content: JSON.stringify(user) });
+        console.log("Mensaje enviado al webhook de Discord");
+      } catch (error) {
+        console.error("Error al enviar el mensaje al webhook de Discord:", error);
       }
     }
   }  
@@ -193,13 +191,16 @@ const addEventWebhook = async (id: string, WebhookDetails: WebhookDetails) => {
   return user;
 }
 
-const getEventsWebhook = async (WebhookDetails: WebhookDetails) => {
+const getEventsWebhook = async (pageArgs: GetUsersArgs, WebhookDetails: WebhookDetails) => {
   const events = await User.find({
     $or: [
       { 'webhooksDetails.url': WebhookDetails.url },
       { 'webhooksDetails.eventName': WebhookDetails.eventName }
     ]
-  });
+  })
+  .limit(pageArgs.limit)
+  .skip((pageArgs.page - 1) * pageArgs.limit)
+  .exec();
   return events;
 }
 

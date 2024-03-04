@@ -29,7 +29,7 @@ const typeDefs = gql`
     searchUsers(searchTerm: String!): [User]
     usersWithFilters(role: String!): [User]
     totalUserCount: Int
-    totalOfEvents(url: String, eventName: String): [User]
+    totalOfEvents(pageArgs: PageArgs, url: String, eventName: String): [User]
   }
 
   type Mutation {
@@ -48,6 +48,11 @@ const typeDefs = gql`
     password: String!
     role: String!
     
+  }
+
+  input PageArgs{
+    page: Int
+    limit: Int
   }
 
   input InputWebhookDetails {

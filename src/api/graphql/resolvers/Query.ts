@@ -34,7 +34,7 @@ const Query = {
     if (!context.user) {
       throw signale.fatal(new Error("Autenticación requerida."));
     }
-    return userService.getUsersByRole({role});
+    return userService.getUsersByRole(role);
   },
   totalUserCount: async (parent: any, args: any, context: any) => {
     if (!context.user) {

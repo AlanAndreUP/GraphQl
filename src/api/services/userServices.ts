@@ -93,12 +93,12 @@ const changePassword = async ({ userId, oldPassword, newPassword }: ChangePasswo
     throw new Error('User not found');
   }
   const isMatch = await bcrypt.compare(oldPassword, user.password);
-  if (!isMatch) {
+  if (isMatch) {
     throw new Error('Old password does not match');
   }
   user.password = await bcrypt.hash(newPassword, 10);
   await user.save();
-  return user;
+  return true;
 };
 const emailPassword = async ({ userId, oldEmail, newEmail }: ChangeEmailArgs) => {
   const user = await User.findById(userId);
@@ -106,12 +106,12 @@ const emailPassword = async ({ userId, oldEmail, newEmail }: ChangeEmailArgs) =>
     throw new Error('User not found');
   }
   const isMatch = await bcrypt.compare(oldEmail, user.email);
-  if (!isMatch) {
-    throw new Error('Old password does not match');
+  if (isMatch) {
+    throw new Error('Old email does not match');
   }
-  user.password = await bcrypt.hash(newEmail, 10);
+  user.email = newEmail;
   await user.save();
-  return user;
+  return true;
 };
 
 const searchUsersByName = async ({ searchTerm }: SearchUsersArgs) => {
@@ -128,9 +128,16 @@ const getTotalUserCount = async () => {
   return User.countDocuments();
 };
 
-const getUsersByRole = async ({ role }: GetUsersByRoleArgs) => {
-  return User.find({ role });
+const getUsersByRole = async (role:string) => {
+  const regex = new RegExp(role, 'i');
+  return User.find({
+    $or: [
+      { role: regex }
+      
+    ]
+  });
 };
+
 
 const createUser = async (userData: UserData) => {
   const { name, email, password, role } = userData;

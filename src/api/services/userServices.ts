@@ -130,9 +130,14 @@ const getTotalUserCount = async () => {
   return User.countDocuments();
 };
 
-const getUsersByRole = async ({ role:String }) => {
- 
-  return User.find({ role: role });
+const getUsersByRole = async (role:string) => {
+  const regex = new RegExp(role, 'i');
+  return User.find({
+    $or: [
+      { role: regex }
+      
+    ]
+  });
 };
 
 

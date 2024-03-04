@@ -3,39 +3,36 @@ import { gql } from 'apollo-server-express';
 const typeDefs = gql`
   type User {
     id: ID!
-    name: String,
-    lastName: String,
+    name: String
+    lastName: String
     email: String!
-    badgeNumber: String,
-    password: String,
+    badgeNumber: String
+    password: String
     role: String
   }
+  type UsersPage {
+    users: [User]
+    totalPages: Int
+    currentPage: Int
+  }
+  
 
   type Query {
-    users(page: Int, limit: Int): [User]
+    users(page: Int, limit: Int): UsersPage
     user(id: ID!): User
   }
+  
 
   type Mutation {
-    mutation RegisterNewUser($user: RegisterUserInput!) {
-      registerUser(user: $user) {
-        id
-        name
-        lastName
-        email
-        badgeNumber
-        password
-        role
-      }
-    }
+    registerUser(user: RegisterUserInput!): User
     loginUser(email: String!, password: String!): String # JWT token
   }
+  
   input RegisterUserInput {
     name: String!
     email: String!
     password: String!
   }
-  
 `;
 
 export default typeDefs;

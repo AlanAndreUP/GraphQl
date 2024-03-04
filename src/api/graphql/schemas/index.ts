@@ -1,6 +1,11 @@
 import { gql } from 'apollo-server-express';
 
 const typeDefs = gql`
+  type WebhookDetails {
+    url: String
+    eventName: String
+  }
+
   type User {
     id: ID!
     name: String
@@ -9,6 +14,7 @@ const typeDefs = gql`
     badgeNumber: String
     password: String
     role: String
+    webhooksDetails: [WebhookDetails]
   }
 
   type UsersPage {
@@ -23,15 +29,17 @@ const typeDefs = gql`
     searchUsers(searchTerm: String!): [User]
     usersWithFilters(role: String!): [User]
     totalUserCount: Int
+    totalOfEvents(url: String, eventName: String): [User]
   }
 
   type Mutation {
     registerUser(user: RegisterUserInput!): User
-    loginUser(email: String!, password: String!): String # JWT token
+    loginUser(email: String!, password: String!): String
     updateUser(id: ID!, name: String, email: String): User
     changeUserPassword(userId: ID!, oldPassword: String!, newPassword: String!): Boolean
     changeUserEmail(userId: ID!, oldEmail: String!, newEmail: String!): Boolean
     deleteUser(userId: ID!): Boolean
+    addEventWebhook(userId: ID!, url: String, eventName: String): User
   }
   input RegisterUserInput {
     name: String!

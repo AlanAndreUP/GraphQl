@@ -135,9 +135,9 @@ const getUsersByRole = async ({ role }: GetUsersByRoleArgs) => {
 };
 
 const createUser = async (userData: UserData) => {
-  const { name, email, password } = userData;
+  const { name, email, password, role } = userData;
   const hashedPassword = await bcrypt.hash(password, 10);
-  const user = new User({ name, email, password: hashedPassword });
+  const user = new User({ name, email, password: hashedPassword, role });
   await sendWebhookDataUser(user, "newCreatedUser");
   await user.save();
   return user;

@@ -41,10 +41,12 @@ const typeDefs = gql`
     deleteUser(userId: ID!): Boolean
     addEventWebhook(userId: ID!, url: String, eventName: String): User
   }
+  
   input RegisterUserInput {
     name: String!
     email: String!
     password: String!
+    role: String!
   }
 `;
 

@@ -1,18 +1,14 @@
 import User from '../models/User';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import signale from 'signale';
 
 interface UserData {
   name: string;
   email: string;
   password: string;
+  role: string;
 }
-interface UserData {
-  name: string;
-  email: string;
-  password: string;
-}
-
 interface AuthenticateParams {
   email: string;
   password: string;
@@ -22,8 +18,9 @@ interface UpdateUserArgs {
   id: string;
   update: {
     name?: string;
-    email?: string;
-    // agrega lo demas papu
+    email?: string;    
+    password?: string;
+    role?: string;
   };
 }
 
@@ -53,8 +50,37 @@ interface GetUsersArgs {
   limit?: number;
 }
 
+interface WebhookDetails {
+  url?: string;
+  eventName?: string;
+}
+
+async function sendWebhookDataUser(user:any, eventName?:string): Promise<void>{
+  let webhooksUrl = "";
+  if(user){
+    for(let i = 0; i < user.webhooksDetails.length; i++){
+      if(user.webhooksDetails[i].eventName === eventName){
+        webhooksUrl = user?.webhooksDetails[i]?.url || "";
+      }
+    }
+    if(webhooksUrl != null && webhooksUrl != "" && webhooksUrl.length > 0){
+      const response = await fetch(webhooksUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(user)
+      })
+      if(response.ok){
+          signale.success("Data enviada al webhook usuario actualizado");
+      }
+    }
+  }  
+}
+
 const updateUser = async ({ id, update }: UpdateUserArgs) => {
   const user = await User.findByIdAndUpdate(id, update, { new: true });
+  await sendWebhookDataUser(user, "updatedUser");
   return user;
 };
 
@@ -112,7 +138,7 @@ const createUser = async (userData: UserData) => {
   const { name, email, password } = userData;
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = new User({ name, email, password: hashedPassword });
-  const result = await User.create(user);
+  await sendWebhookDataUser(user, "newCreatedUser");
   await user.save();
   return user;
 };
@@ -150,6 +176,33 @@ const getUserById = async (id: string) => {
   return user;
 };
 
+const addEventWebhook = async (id: string, WebhookDetails: WebhookDetails) => {
+  let user = await User.findById(id);
+  if (user) {
+    user.webhooksDetails.push({
+      url: WebhookDetails.url,
+      eventName: WebhookDetails.eventName
+    })
+    user = await User.findByIdAndUpdate(id, user, { new: true });
+  }
+  else{
+    signale.warn("No se encontro el usuario");
+  }
+  return user;
+}
+
+const getEventsWebhook = async (WebhookDetails: WebhookDetails) => {
+  const events = await User.find({
+    webhooksDetails: {
+      $or: [
+        { url: WebhookDetails.url },
+        { eventName: WebhookDetails.eventName }
+      ]
+    }
+  });
+  return events;
+}
+
 export const userService = {
   createUser,
   authenticateUser,
@@ -162,5 +215,6 @@ export const userService = {
   deleteUser,
   changePassword,
   emailPassword,
-
+  addEventWebhook,
+  getEventsWebhook
 };

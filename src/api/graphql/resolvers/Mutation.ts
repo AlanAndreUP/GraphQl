@@ -1,11 +1,16 @@
 import { userService } from '../../services/userServices';
 
+interface WebhookDetails {
+  url?: string;
+  eventName?: string;
+}
 
 interface RegisterUserArgs {
   user: {
     name: string;
     email: string;
     password: string;
+    role: string;
   };
 }
 interface UpdateUserArgs {
@@ -13,7 +18,8 @@ interface UpdateUserArgs {
   update: {
     name?: string;
     email?: string;
-    // agrega lo demas papu
+    password?: string;
+    role?: string;
   };
 }
 
@@ -47,7 +53,9 @@ const Mutation = {
     return userService.deleteUser(userId);
   },
   
-
+  addEventWebhook: async (_: any, { id, WebhookDetails }: { id: string, WebhookDetails: WebhookDetails }) => {
+    return userService.addEventWebhook(id, WebhookDetails);
+  }
 };
 
 export default Mutation;

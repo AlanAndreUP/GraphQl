@@ -10,7 +10,7 @@ const userSchema = new Schema<User>({
     webhooksDetails: [{ 
         url: String,
         eventName: String
-     }]
+    }]
 })
 
 export default userSchema

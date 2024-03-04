@@ -4,15 +4,26 @@ import typeDefs from './api/graphql/schemas';
 import resolvers from './api/graphql/resolvers';
 import { authenticate } from './api/graphql/utils/auth';
 
-const app = express();
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  
-});
+async function startApolloServer() {
+  const app = express();
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+   
+  });
 
+  await server.start();
+  server.applyMiddleware({ app });
 
+  app.listen({ port: 4000 }, () => {
+    console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
+  });
+}
 
-app.listen({ port: 4000 }, () =>
-  console.log(`🚀 Server ready at http://localhost:4000/api`)
-);
+(async () => {
+  try {
+    await startApolloServer();
+  } catch (e) {
+    console.error(e);
+  }
+})();

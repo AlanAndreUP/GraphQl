@@ -2,11 +2,11 @@ import { gql } from 'apollo-server-express';
 
 const typeDefs = gql`
   type User {
-    name: string,
-    lastName: string,
-    badgeNumber: string,
-    password: string,
-    role: string
+    name: String,
+    lastName: String,
+    badgeNumber: String,
+    password: String,
+    role: String
   }
 
   type Query {

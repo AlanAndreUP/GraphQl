@@ -44,9 +44,6 @@ const Query = {
   },
 
   totalOfEvents: async (parent: any, args: any, context: any) => {
-    if (!context.user) {
-      throw new Error("Autenticación requerida.");
-    }
     return userService.getEventsWebhook({url: args.url, eventName: args.eventName});
   }
 };

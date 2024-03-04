@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import signale from "signale";
 
 export const mongodbConnect = async () => {
-    const uri = "mongodb+srv://JeshuaMR:JeshuaMR@cuatrifj.ejyg1tv.mongodb.net/Cuatri5";
+    const uri = "mongodb+srv://223208:Jaguares34.@cluster0.swir3km.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
     if(!uri){
         throw signale.fatal(new Error("La variable de entorno MONGODB_URI no existe"));

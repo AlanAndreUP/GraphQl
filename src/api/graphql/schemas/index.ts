@@ -39,7 +39,7 @@ const typeDefs = gql`
     changeUserPassword(userId: ID!, oldPassword: String!, newPassword: String!): Boolean
     changeUserEmail(userId: ID!, oldEmail: String!, newEmail: String!): Boolean
     deleteUser(userId: ID!): Boolean
-    addEventWebhook(userId: ID!, url: String, eventName: String): User
+    addEventWebhook(id: ID!, WebhookDetails: InputWebhookDetails): User
   }
   
   input RegisterUserInput {
@@ -48,6 +48,12 @@ const typeDefs = gql`
     password: String!
     role: String!
   }
+
+  input InputWebhookDetails {
+    url: String!
+    eventName: String!
+  }
+  
 `;
 
 export default typeDefs;

@@ -184,6 +184,8 @@ const addEventWebhook = async (id: string, WebhookDetails: WebhookDetails) => {
       eventName: WebhookDetails.eventName
     })
     user = await User.findByIdAndUpdate(id, user, { new: true });
+    signale.success("Webhook agregado al usuario");
+    return user;
   }
   else{
     signale.warn("No se encontro el usuario");
@@ -193,12 +195,10 @@ const addEventWebhook = async (id: string, WebhookDetails: WebhookDetails) => {
 
 const getEventsWebhook = async (WebhookDetails: WebhookDetails) => {
   const events = await User.find({
-    webhooksDetails: {
-      $or: [
-        { url: WebhookDetails.url },
-        { eventName: WebhookDetails.eventName }
-      ]
-    }
+    $or: [
+      { 'webhooksDetails.url': WebhookDetails.url },
+      { 'webhooksDetails.eventName': WebhookDetails.eventName }
+    ]
   });
   return events;
 }

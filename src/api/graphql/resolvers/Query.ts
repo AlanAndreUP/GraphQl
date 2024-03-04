@@ -10,13 +10,18 @@ interface UserArgs {
 }
 
 const Query = {
-    users: async (_: any, { page, limit }: pageArgs) => {
-        return userService.getUsers({ page, limit });
-      },
-  user: async (_: any, { id }: UserArgs) => {
+  users: async (paren:any, { page, limit }: pageArgs, context:any) => {
+    if (!context.user) {
+      throw new Error("Autenticación requerida.");
+    }
+    return userService.getUsers({ page, limit });
+  },
+  user: async (parent:any, { id }: UserArgs, context:any) => {
+    if (!context.user) {
+      throw new Error("Autenticación requerida.");
+    }
     return userService.getUserById(id);
   },
-
 };
 
 export default Query;

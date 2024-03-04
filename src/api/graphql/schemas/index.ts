@@ -2,21 +2,36 @@ import { gql } from 'apollo-server-express';
 
 const typeDefs = gql`
   type User {
-    name: String,
-    lastName: String,
-    badgeNumber: String,
-    password: String,
+    id: ID!
+    name: String
+    lastName: String
+    email: String!
+    badgeNumber: String
+    password: String
     role: String
   }
+  type UsersPage {
+    users: [User]
+    totalPages: Int
+    currentPage: Int
+  }
+  
 
   type Query {
-    users(page: Int, limit: Int): [User]
+    users(page: Int, limit: Int): UsersPage
     user(id: ID!): User
   }
+  
 
   type Mutation {
-    registerUser(name: String!, email: String!, password: String!): User
+    registerUser(user: RegisterUserInput!): User
     loginUser(email: String!, password: String!): String # JWT token
+  }
+  
+  input RegisterUserInput {
+    name: String!
+    email: String!
+    password: String!
   }
 `;
 

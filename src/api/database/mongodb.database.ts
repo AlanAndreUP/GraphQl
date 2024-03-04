@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
-import "dotenv/config";
 import signale from "signale";
 
 export const mongodbConnect = async () => {
-    const uri = process.env.MONGODB_URI;
+    const uri = "mongodb+srv://JeshuaMR:JeshuaMR@cuatrifj.ejyg1tv.mongodb.net/Cuatri5";
 
     if(!uri){
         throw signale.fatal(new Error("La variable de entorno MONGODB_URI no existe"));

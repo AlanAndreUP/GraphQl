@@ -1,4 +1,4 @@
-import { User } from "../domain/user";
+import { User, WebhooksDetails } from "../domain/user";
 import UserRepository from "../domain/userRepository";
 import { IEncrypterService } from "./services/IEncrypterService";
 
@@ -12,7 +12,8 @@ export class EditUserUseCase {
         lastName: string,
         badgeNumber: string,
         password: string,
-        role: string
+        role: string,
+        webhooksDetails?: WebhooksDetails
     ) {
         try{
             const user = new User(
@@ -20,7 +21,8 @@ export class EditUserUseCase {
                 lastName,
                 badgeNumber,
                 this.encrypterService.hashPassword(password),
-                role
+                role,
+                webhooksDetails
             );
             return user
         } catch(error){

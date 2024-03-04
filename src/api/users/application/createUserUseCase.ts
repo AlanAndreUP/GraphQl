@@ -1,7 +1,6 @@
 import UserRepository from "../domain/userRepository";
 import { IEncrypterService } from "./services/IEncrypterService";
-import { User } from "../domain/user"
-import { WebhooksDetails } from "../domain/user";
+import { User, WebhooksDetails } from "../domain/user"
 
 export class CreateUserUseCase {
    constructor(
